@@ -6,10 +6,15 @@ import java.util.Map;
 public class App {
     public static void main(String[] args) throws Exception {
         // fazer uma conexao HTTP e buscar o top 250 filmes
-        // String url = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&start_date=2022-06-12&end_date=2022-06-14";
-        // ExtratorDeConteudoDaNasa extrator = new ExtratorDeConteudoDaNasa();
-        String url = "https://api.mocki.io/v2/549a5d8b/Top250Movies";
-        ExtratorDeConteudo extrator = new ExtratorDeConteudoDoIMDB();
+        String url = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&start_date=2022-06-12&end_date=2022-06-14";        
+        ExtratorDeConteudoDaNasa extrator = new ExtratorDeConteudoDaNasa();
+
+        // String url = "https://api.mocki.io/v2/549a5d8b/Top250Movies";
+        // ExtratorDeConteudo extrator = new ExtratorDeConteudoDoIMDB();
+
+        // String url = "http://localhost:8080/linguagens";
+        // ExtratorDeConteudo extrator = new ExtratorDeConteudoDoIMDB();
+
 
         var http = new ClienteHttp();
         String json = http.buscaDados(url);
