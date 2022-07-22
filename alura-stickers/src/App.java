@@ -1,31 +1,38 @@
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
 public class App {
     public static void main(String[] args) throws Exception {
         // fazer uma conexao HTTP e buscar o top 250 filmes
-        String url = "https://raw.githubusercontent.com/alexfelipe/imersao-java/json/top250.json";
-        URI endereco = URI.create(url);
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder(endereco).GET().build();
-        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-        String body = response.body();
-       
+        // String url = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&start_date=2022-06-12&end_date=2022-06-14";
+        // ExtratorDeConteudoDaNasa extrator = new ExtratorDeConteudoDaNasa();
+        String url = "https://api.mocki.io/v2/549a5d8b/Top250Movies";
+        ExtratorDeConteudo extrator = new ExtratorDeConteudoDoIMDB();
 
-        // extrair os dados de interesse (titulo, poster, nota)
-        JsonParser parser = new JsonParser();
-        List<Map<String, String>> listaDeFilmes = parser.parse(body);
+        var http = new ClienteHttp();
+        String json = http.buscaDados(url);
+     
+        
+        List<Conteudo> conteudos = extrator.extraiConteudos(json);
 
+        var geradorDeFigurinhas = new GeradorDeFigurinhas();
         //exibir os dados
-        for (Map<String,String> filme : listaDeFilmes) {
-            System.out.println(filme.get("title"));
-            System.out.println(filme.get("image"));
-            System.out.println(filme.get("imDbRating"));
+        for (int i = 0; i < 3; i++) {
+            Conteudo conteudo = conteudos.get(i); 
+          
+            InputStream inputStream = new URL(conteudo.getUrlImagem()).openStream();
+
+            String nomeDoArquivo = conteudo.getTitulo().replace(":", "-") + ".png";
+
+            
+            geradorDeFigurinhas.cria(inputStream, nomeDoArquivo);
+
+
+
+
+            System.out.println(conteudo.getTitulo());
             System.out.println();
         }
     }
